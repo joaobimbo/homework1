@@ -28,41 +28,6 @@ int getInverseKinematics(Planar3Robot robot,std::vector<float> &angles_ik, Eigen
     return iterations;
 }
 
-int insertIfUnique(std::vector<std::vector<float > > &sols, std::vector<float> s){    
-    int unique=1;
-    for(int i=0; i<sols.size();i++){
-        float dist=0;
-        for(int j=0; j<sols[i].size();j++){
-            dist+=(sols[i][j]-s[j])*(sols[i][j]-s[j]); //get the squared difference
-        }
-        if(dist < 0.1){
-            unique=0;           
-        }
-    }    
-    if (unique==1 || sols.size()==0){
-        sols.push_back(s);
-        return 1;
-    }
-    else{
-        return 0;
-    }    
-}
-
-std::vector<std::vector<float > > getMultipleSolutions(Planar3Robot robot,Eigen::Vector3f desired_pose,int n_solutions){
-    int trials=0;
-    std::vector<std::vector<float > > solutions;
-    while (solutions.size()<n_solutions){
-        std::vector<float> angles_ik;
-        //Create random initial positions
-        for(int i=0;i<robot.getDOF();i++){angles_ik.push_back(2.0f*M_PI*rand()/RAND_MAX);}
-        //Get IK solution
-        getInverseKinematics(robot,angles_ik,desired_pose);
-        //Add to solutions if it's new:
-        insertIfUnique(solutions,angles_ik);        
-    }
-    return solutions;
-}
-
 
 int main(){
 
@@ -88,7 +53,7 @@ for(int j=0;j<robot.getDOF();j++) {angles_ik.push_back((float) M_PI * rand()/RAN
 getInverseKinematics(robot,angles_ik,v);
 getForwardKinematics(robot,angles_ik);
 
-std::vector<std::vector<float> > solutions = getMultipleSolutions(robot,v,2);
+std::vector<std::vector<float> > solutions = robot.getMultipleSolutions(v,2);
 for (int i=0;i<solutions.size();i++){
     printf("Sol %d: ",i);
     for(int j=0;j<robot.getDOF();j++){printf("%f ",solutions[i][j]);

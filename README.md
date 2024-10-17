@@ -19,23 +19,31 @@ In this exercise on robot kinematics, I took the following approach:
 - we want to find the set of angles $\textbf{q}_d$ that put the end-effector in the desired pose
 
 The Jacobian matrix $J$ maps the joint movements to the end-effector velocity, which I assume is also OK for small displacements. 
-$ J \dot{\textbf{q}} = \dot{\textbf{x}} \approx  J \Delta \textbf{q} = \Delta \textbf{x} $
+```math
+ J \dot{\textbf{q}} = \dot{\textbf{x}} \approx  J \Delta \textbf{q} = \Delta \textbf{x} 
+```
 
 Then, from the error $\textbf{e} = \textbf{x}_d - \textbf{x}_t$, we can move the robot along the error vector through the following:
-
-$\textbf{q}_{t+1} = \textbf{q}_{t} + \Delta \textbf{q} $
+```math
+\textbf{q}_{t+1} = \textbf{q}_{t} + \Delta \textbf{q}
+```
 
 Here, inverting the Jacobian matrix would be the solution to obtain $\Delta \textbf{q}$ (actually pseudo-inverting is done). 
 
 Now, for simplicity I use the transpose, which is acceptable because of the principle of virtual work:
 - The Work done is irrespective of whether we describe it in joint space or task space:
-$ \tau^T \Delta q = F^T \Delta x$
-Now, replace with the Jacobian definition: $ \Delta x = J \Delta q$ yields:
-$ \tau = J^T F$
+```math
+ \tau^T \Delta q = F^T \Delta x
+```
+Now, replace with the Jacobian definition: $\Delta x = J \Delta q$ yields:
+```math
+ \tau = J^T F
+```
 
 This means that, essentially the transpose Jacobian maps the cartesian forces onto the joint torques, and we can use it to move the end-effector along the desired direction to the goal:
-
-$\textbf{q}_{t+1} = \textbf{q}_{t} + \lambda J^T \textbf{e} $
+```math
+\textbf{q}_{t+1} = \textbf{q}_{t} + \lambda J^T \textbf{e}
+```
 
 where $\lambda$ is the step-size.
 
